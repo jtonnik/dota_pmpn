@@ -18,6 +18,10 @@ type_act["LateralLifts"]=5
 activity=("PushUps" "Lunges" "LateralLifts" "RowingReps" "PushUps" "SitUps" "Curls") #Activities Monday through Sunday
 multiplier_FatBoyJ=(3 3 3 3 3 3 3) #Activities multiplier per death Monday through Sunday
 multiplier_SlimL=(3 3 3 3 3 4 3) #Activities multiplier per death Monday through Sunday
+
+#Reset stat document
+truncate --size 0 "status.txt"
+
 for ((players = 0; players < $player_amount; players++)); do
     # Query matches from API, after beginning of pmpn -> Output two coloumns - UNIX Start Timestamp & Amount of Deaths
     curl -s https://api.opendota.com/api/players/${player_id[players]}/matches | jq '.[] | select(.start_time > 1691696862) | "\(.start_time) \(.deaths)"' > stats_${player_nick[players]}.json
@@ -31,6 +35,11 @@ for ((players = 0; players < $player_amount; players++)); do
     # Introduce & empty temp file to modify data
     tempfile="temp_${player_nick[players]}.json"
     truncate --size 0 "$tempfile"
+
+    # Empty line for readability
+    if [ "$players" -ne "0" ]; then
+        echo "" >> status.txt
+    fi
             
     # Loop receiving input file of API call, splitting (existing) two coloumn API output into respective variables that were queried. Timestamp is converted and mapped to physical acitivies in the process
     while IFS=" " read -r timestamp deaths; do
@@ -73,10 +82,10 @@ for ((players = 0; players < $player_amount; players++)); do
     done < "stats_${player_nick[players]}.json"
 
     #Print sum of activities per weekday, exluding 0 values
-    echo Sum of ${player_nick[players]}s daily acitivites:
+    echo Sum of ${player_nick[players]}s daily acitivites: >> status.txt
     for day in {0..6}; do
         if [ "${sum_day[day]}" -ne "0" ]; then
-            echo ${player_nick[players]} has already done ${sum_day[day]} ${activity[day]} by relentlessly feeding in DotA on ${weekdays[day]}s!
+            echo ${player_nick[players]} has already done ${sum_day[day]} ${activity[day]} by relentlessly feeding in DotA on ${weekdays[day]}s! >> status.txt
         fi
     done
     #Sum up all activities, depending on the activity
@@ -89,11 +98,11 @@ for ((players = 0; players < $player_amount; players++)); do
         done
     done
     #Print sum of activities per type, exluding 0 values
-    echo Sum of ${player_nick[players]}s acitivity types:
+    echo Sum of ${player_nick[players]}s acitivity types:  >> status.txt
     for type in "${!type_act[@]}"; do
         index="${type_act["$type"]}"
         if [ "${sum_act[index]}" -ne "0" ]; then
-            echo ${player_nick[players]} has overall already done ${sum_act[index]} $type by relentlessly feeding in DotA!
+            echo ${player_nick[players]} has overall already done ${sum_act[index]} $type by relentlessly feeding in DotA! >> status.txt
         fi
     done
 
@@ -130,11 +139,11 @@ for ((players = 0; players < $player_amount; players++)); do
     done
 
     #Print daily record for each category
-    echo ${player_nick[players]}s records:
+    echo ${player_nick[players]}s records: >> status.txt
     for act in "${!type_act[@]}"; do
         index="${type_act["$act"]}"
         if [ "${record_act[index]}" -gt "0" ]; then
-            echo ${player_nick[players]}s record for $act in a day by relentlessly feeding in DotA is ${record_act[index]}!
+            echo ${player_nick[players]}s record for $act in a day by relentlessly feeding in DotA is ${record_act[index]}! >> status.txt
         fi
     done
 

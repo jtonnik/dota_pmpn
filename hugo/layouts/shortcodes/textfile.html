@@ -1,0 +1,8 @@
+{{- $filePath := .Get 0 -}}
+{{- with os.Open $filePath -}}
+  {{- $content := . | readFile -}}
+  {{- .Close -}}
+  {{- $content -}}
+{{- else -}}
+  Failed to read the file.
+{{- end -}}
