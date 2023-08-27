@@ -7,6 +7,17 @@ cascade:
   featured_image: '/images/wallpaper.jpg'
 ---
 
+# Activities
+## Mondays - Push Ups
+## Tuesdays - Lunges
+## Wednesdays - Lateral Lifts
+## Thursdays - Rowing
+## Fridays - Push Ups
+## Saturdays - Sit Ups
+## Sundays - Bizep Curls
+
+
+
 # Sum of FatBoyJs daily acitivites:
     FatBoyJ has already done 105 PushUps by relentlessly feeding in DotA on Mondays!
     FatBoyJ has already done 48 Lunges by relentlessly feeding in DotA on Tuesdays!
