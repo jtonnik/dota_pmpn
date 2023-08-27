@@ -3,9 +3,11 @@
 player_id=(83480096 128254692)
 player_nick=("FatBoyJ" "SlimL")
 player_amount=${#player_id[@]}
+
 #Seconds per Day
 SPD=86400
 weekdays=(Monday Tuesday Wednesday Thursday Friday Saturday Sunday)
+
 #Different types of activites (new var for doubled activities)
 declare -A type_act
 type_act["PushUps"]=0
@@ -14,13 +16,26 @@ type_act["Lunges"]=2
 type_act["RowingReps"]=3
 type_act["Curls"]=4
 type_act["LateralLifts"]=5
+
 #Activity mapping to weekday
 activity=("PushUps" "Lunges" "LateralLifts" "RowingReps" "PushUps" "SitUps" "Curls") #Activities Monday through Sunday
 multiplier_FatBoyJ=(3 3 3 3 3 3 3) #Activities multiplier per death Monday through Sunday
 multiplier_SlimL=(3 3 3 3 3 4 3) #Activities multiplier per death Monday through Sunday
 
+output_file="hugo/content/index.md"
+
 #Reset stat document
-truncate --size 0 "status.txt"
+truncate --size 0 $output_file
+
+echo "# Activities
+     ## Mondays - Push Ups
+     ## Tuesdays - Lunges
+     ## Wednesdays - Lateral Lifts
+     ## Thursdays - Rowing
+     ## Fridays - Push Ups
+     ## Saturdays - Sit Ups
+     ## Sundays - Bizep Curls
+     " >> $output_file
 
 for ((players = 0; players < $player_amount; players++)); do
     # Query matches from API, after beginning of pmpn -> Output two coloumns - UNIX Start Timestamp & Amount of Deaths
@@ -38,10 +53,10 @@ for ((players = 0; players < $player_amount; players++)); do
 
     # Empty line for readability
     if [ "$players" -ne "0" ]; then
-        echo "" >> status.txt
+        echo "" >> $output_file
     fi
             
-    # Loop receiving input file of API call, splitting (existing) two coloumn API output into respective variables that were queried. Timestamp is converted and mapped to physical acitivies in the process
+    # Loop receiving input file of API call, splitting (existing) two coloumn API output into respective variables that were queried. Timestamp is converted and mapped to physical activies in the process
     while IFS=" " read -r timestamp deaths; do
         # UNIX Timestamp -> Weekday
 
@@ -82,10 +97,10 @@ for ((players = 0; players < $player_amount; players++)); do
     done < "stats_${player_nick[players]}.json"
 
     #Print sum of activities per weekday, exluding 0 values
-    echo Sum of ${player_nick[players]}s daily acitivites: >> status.txt
+    echo "# Sum of" ${player_nick[players]}s daily activites: >> $output_file
     for day in {0..6}; do
         if [ "${sum_day[day]}" -ne "0" ]; then
-            echo ${player_nick[players]} has already done ${sum_day[day]} ${activity[day]} by relentlessly feeding in DotA on ${weekdays[day]}s! >> status.txt
+            echo "      " ${player_nick[players]} has already done ${sum_day[day]} ${activity[day]} by relentlessly feeding in DotA on ${weekdays[day]}s! >> $output_file
         fi
     done
     #Sum up all activities, depending on the activity
@@ -98,11 +113,11 @@ for ((players = 0; players < $player_amount; players++)); do
         done
     done
     #Print sum of activities per type, exluding 0 values
-    echo Sum of ${player_nick[players]}s acitivity types:  >> status.txt
+    echo "## Sum of" ${player_nick[players]}s activity types:  >> $output_file
     for type in "${!type_act[@]}"; do
         index="${type_act["$type"]}"
         if [ "${sum_act[index]}" -ne "0" ]; then
-            echo ${player_nick[players]} has overall already done ${sum_act[index]} $type by relentlessly feeding in DotA! >> status.txt
+            echo "      " ${player_nick[players]} has overall already done ${sum_act[index]} $type by relentlessly feeding in DotA! >> $output_file
         fi
     done
 
@@ -139,11 +154,11 @@ for ((players = 0; players < $player_amount; players++)); do
     done
 
     #Print daily record for each category
-    echo ${player_nick[players]}s records: >> status.txt
+    echo "##" ${player_nick[players]}s records: >> $output_file
     for act in "${!type_act[@]}"; do
         index="${type_act["$act"]}"
         if [ "${record_act[index]}" -gt "0" ]; then
-            echo ${player_nick[players]}s record for $act in a day by relentlessly feeding in DotA is ${record_act[index]}! >> status.txt
+            echo "      "${player_nick[players]}s record for $act in a day by relentlessly feeding in DotA is ${record_act[index]}! >> $output_file
         fi
     done
 
