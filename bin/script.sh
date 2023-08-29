@@ -1,7 +1,7 @@
 #!/bin/bash
 
 player_id=(83480096 128254692)
-player_nick=("FatBoyJ" "SlimL")
+player_nick=("FatBoyJ" "SlimL" "SkinnyH")
 player_amount=${#player_id[@]}
 
 #Seconds per Day
