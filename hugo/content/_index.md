@@ -4,7 +4,7 @@ title: "Dotabuffed"
 description: "Statstics on feeding in DotA. WIP"
 theme_version: '2.8.2'
 cascade:
-  featured_image: '/images/wallpaper.jpg'
+  featured_image: 'https://c4.wallpaperflare.com/wallpaper/331/829/203/dota-2-middle-battle-map-wallpaper-preview.jpg'
 ---
 
 # Activities
